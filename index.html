@@ -32,50 +32,31 @@
   </div>
   <section id="index" class="panel-content" data-display="flex">
 <header>
-<div style="display:flex; gap:15px;">
+  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
+    
+    <div class="filter-box" style="grid-column: span 2; min-width: 0;">
+      <select id="filter-region" style="width: 100%;">
+        <option value="all">Semua Wilayah – </option>
+      </select>
+    </div>
 
-  <div class="filter-box" style="flex:2;">
-    <select id="filter-region">
-      <option value="all">Semua Wilayah – </option>
-    </select>
+    <div class="filter-box" style="grid-column: span 1; min-width: 0;">
+      <select id="filter-sort-kombinasi" style="width: 100%;">
+        <option value="default">[ Pilih ]</option>
+        <option value="filter-usia-50">Berusia > 50 Tahun</option>
+        <option value="filter-klaster">Hanya Masjid Besar/Agung/Jamik</option>
+      </select>
+    </div>
+    
   </div>
 
-<div class="filter-box" style="flex:1;">
-    <select id="filter-sort-kombinasi">
-      <option value="default">Semua Masjid</option>
-      <option value="filter-usia-50">Bersejarah</option>
-      <option value="filter-klaster">Besar</option>
-    </select>
+  <div id="filter-features" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; padding-top: 15px;">
+    <button class="feat-btn active" id="btn-all" data-filter="all">Semua Hasil</button>
+    <button class="feat-btn" id="btn-image" data-filter="image">Memiliki Gambar</button>
+    <button class="feat-btn" id="btn-article" data-filter="article">Memiliki Artikel</button>
   </div>
-
-</div>
-
-<!-- Tombol fitur -->
-<div id="filter-features"
-     style="display:flex;
-            flex-wrap:wrap;
-            gap:15px;padding-top: 15px;">
-
-  <button class="feat-btn active"
-          id="btn-all"
-          data-filter="all">
-      Semua
-  </button>
-
-  <button class="feat-btn"
-          id="btn-image"
-          data-filter="image">
-  </button>
-
-  <button class="feat-btn"
-          id="btn-article"
-          data-filter="article">
-  </button>
-
-</div>
-
-      </div>
-      </header>
+</header>
+    
 <input type="search" 
        id="search-input" 
        placeholder="Menghitung data..." 
