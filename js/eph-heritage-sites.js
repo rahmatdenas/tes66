@@ -773,7 +773,7 @@ function renderHistoricalImagesInPanel(qid) {
   // Finalisasi penempelan ke layar
   if (html !== '') {
     // KUNCI PERUBAHAN: H2 "Arsip & Foto Lingkungan" sudah dihapus
-container.innerHTML = '<h2>Galeri</h2>' + html;
+container.innerHTML = '<h2 style="margin-bottom:15px;">Galeri</h2>' + html;
     container.classList.remove('loading');
   } else {
     container.innerHTML = '';
