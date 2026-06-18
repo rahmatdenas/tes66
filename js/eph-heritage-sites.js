@@ -293,7 +293,7 @@ function renderEventsInPanel(qid) {
   } else {
     // Skenario jika tidak ada data peristiwa sama sekali
     // Alih-alih hanya menghapus container, kita render tautan "Tambahkan data"
-    let tautanTambah = `<p><a href="${wikiUrl}" target="_blank" class="sunting-link" title="Tambahkan peristiwa di Wikidata">Tambahkan data</a></p>`;
+    let tautanTambah = `<p><a href="${wikiUrl}" target="_blank" class="sunting-linktambah" title="Tambahkan peristiwa di Wikidata">Tambahkan data</a></p>`;
     
     container.insertAdjacentHTML('beforebegin', tautanTambah);
     container.remove();
