@@ -236,68 +236,104 @@ eventObj.time = `${et} (diselesaikan)`; // Mengubah format selesai
         }
       }
     },
-    function() {
-      renderEventsInPanel(qid); 
+function() {
+      // Alih-alih merender, kita lanjutkan tarik data Status & Kapasitas
+      populateStatusAndCapacityData(qid); 
     }
   );
 }
+
+// ====================================================================
+// FUNGSI JARING 4: Mengambil Status & Kapasitas (Berantai)
+// ====================================================================
+function populateStatusAndCapacityData(qid) {
+  let record = Records[qid];
+  let queryStr = getSparqlQuery6(qid); // Memanggil kueri yang mengambil P5817 & P1083
+
+  // Siapkan penampung kosong
+  record.kondisi = null;
+  record.kapasitas = null;
+
+  return queryWdqsThenProcess(
+    queryStr,
+    function(result) {
+      if ('kondisiLabel' in result && result.kondisiLabel.value) {
+        record.kondisi = result.kondisiLabel.value;
+      }
+      if ('kapasitas' in result && result.kapasitas.value) {
+        record.kapasitas = result.kapasitas.value;
+      }
+    },
+    function() {
+      // Setelah semua data (Peristiwa, Kondisi, Kapasitas) terkumpul, RENDER!
+      renderDynamicDataInPanel(qid); 
+    }
+  );
+}
+
 // ====================================================================
 // FUNGSI RENDER: Menyuntikkan Data Peristiwa (DIPERBAIKI)
 // ====================================================================
-function renderEventsInPanel(qid) {
+// ====================================================================
+// FUNGSI RENDER: Menyuntikkan Peristiwa, Status, & Kapasitas
+// ====================================================================
+function renderDynamicDataInPanel(qid) {
   let record = Records[qid];
   
   if (!record.panelElem) return;
+  // Kita tetap menggunakan ID container events sebagai patokan loader
   let container = record.panelElem.querySelector(`#events-container-${qid}`);
   if (!container) return; 
 
-  // Siapkan URL yang mengarah langsung ke bagian Peristiwa Penting (P793) di Wikidata
-  let wikiUrl = `https://www.wikidata.org/wiki/${qid}#P793`;
+  let html = '';
+  let wikiBaseUrl = `https://www.wikidata.org/wiki/${qid}`;
 
+  // --- URUTAN 1: PERISTIWA PENTING ---
   if (record.events && record.events.length > 0) {
-    
     const EVENT_ORDER = {
-      'konstruksi': 1,
-      'dibuka untuk umum': 2,
-      'upacara pembukaan': 3,
-      'renovasi': 4,
+      'konstruksi': 1, 'dibuka untuk umum': 2,
+      'upacara pembukaan': 3, 'renovasi': 4,
       'pembangunan kembali': 5
     };
 
     record.events.sort((a, b) => {
       let orderA = EVENT_ORDER[a.label.toLowerCase()] || 99;
       let orderB = EVENT_ORDER[b.label.toLowerCase()] || 99;
-      
-      if (orderA !== orderB) {
-        return orderA - orderB;
-      }
+      if (orderA !== orderB) return orderA - orderB;
       return a.sortYear - b.sortYear;
     });
 
-    let html = '';
-    
-    // Tautan [Sunting] 
-    let tautanSunting = ` <a href="${wikiUrl}" target="_blank" class="sunting-link" title="Sunting peristiwa di Wikidata">[Sunting]</a>`;
+    let tautanSuntingEvent = ` <a href="${wikiBaseUrl}#P793" target="_blank" class="sunting-link" title="Sunting peristiwa di Wikidata">[Sunting]</a>`;
 
     record.events.forEach(ev => {
       let capLabel = ev.label.charAt(0).toUpperCase() + ev.label.slice(1);
       let timeText = ev.time ? ev.time : ''; 
-      
-      // Sisipkan tautan sunting tepat di akhir teks dalam elemen <p>
-      html += `<p>${capLabel}: ${timeText}${tautanSunting}</p>`;
+      html += `<p>${capLabel}: ${timeText}${tautanSuntingEvent}</p>`;
     });
-    
-    container.insertAdjacentHTML('beforebegin', html);
-    container.remove();
-
-  } else {
-    // Skenario jika tidak ada data peristiwa sama sekali
-    // Alih-alih hanya menghapus container, kita render tautan "Tambahkan data"
-    let tautanTambah = `<p><a href="${wikiUrl}" target="_blank" class="sunting-linktambah" title="Tambahkan peristiwa di Wikidata">Tambahkan data lainnya</a></p>`;
-    
-    container.insertAdjacentHTML('beforebegin', tautanTambah);
-    container.remove();
   }
+
+  // --- URUTAN 2: STATUS (KONDISI - P5817) ---
+  if (record.kondisi) {
+    let capKondisi = record.kondisi.charAt(0).toUpperCase() + record.kondisi.slice(1);
+    let tautanSuntingKondisi = ` <a href="${wikiBaseUrl}#P5817" target="_blank" class="sunting-link" title="Sunting kondisi di Wikidata">[Sunting]</a>`;
+    html += `<p>Kondisi: ${capKondisi}${tautanSuntingKondisi}</p>`;
+  }
+
+  // --- URUTAN 3: KAPASITAS JEMAAH (P1083) ---
+  if (record.kapasitas) {
+    // Format angka agar lebih rapi (contoh: 1000 menjadi 1.000)
+    let formatAngka = parseInt(record.kapasitas).toLocaleString('id-ID');
+    let tautanSuntingKapasitas = ` <a href="${wikiBaseUrl}#P1083" target="_blank" class="sunting-link" title="Sunting kapasitas di Wikidata">[Sunting]</a>`;
+    html += `<p>Kapasitas: ${formatAngka} jemaah${tautanSuntingKapasitas}</p>`;
+  }
+
+  // --- URUTAN 4: TAUTAN TAMBAHKAN DATA LAINNYA (Tampil Default) ---
+  let tautanTambah = `<p><a href="${wikiBaseUrl}" target="_blank" class="sunting-linktambah" title="Tambahkan data di Wikidata">Tambahkan data lainnya</a></p>`;
+  html += tautanTambah;
+
+  // --- EKSEKUSI RENDER & HAPUS LOADER ---
+  container.insertAdjacentHTML('beforebegin', html);
+  container.remove();
 }
 
 function populateDesignationIndex() {
