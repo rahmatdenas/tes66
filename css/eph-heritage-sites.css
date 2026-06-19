@@ -35,7 +35,6 @@ nav ul li:nth-child(2) {
   text-align: center;  
       flex: 3;
 }
-}
 
 nav ul li:nth-child(3) {
   text-align: right; 
