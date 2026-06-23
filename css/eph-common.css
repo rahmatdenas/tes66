@@ -1,3 +1,6 @@
+/* ==========================================================================
+   1. PENGATURAN DASAR & UTILITAS
+   ========================================================================== */
 html, body {
   margin: 0;
   padding: 0;
@@ -9,53 +12,50 @@ body {
   align-items: stretch;
 }
 
+/* Pengelompokan atribut anti-blok blok teks agar efisien (DRY) */
+#branding, #index, nav ul,
+.leaflet-popup-content-wrapper, .leaflet-popup-tip {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Animasi Loader (Sudah digabung dengan warna dari CSS2) */
 .loader {
   border-radius: 50%;
   width: 40px;
   height: 40px;
   font-size: 10px;
   text-indent: -9999em;
-  border: 5px solid;
+  border: 5px solid rgba(136, 34, 34, 0.2);
+  border-left-color: #822;
   transform: translateZ(0);
   animation: load8 1.1s infinite linear;
 }
 
 @keyframes load8 {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
+/* ==========================================================================
+   2. PANEL KIRI & BRANDING (Header)
+   ========================================================================== */
 #panel {
   display: flex;
   flex-direction: column;
   flex: 0 1 500px;
   height: 100%;
+  background: #822;
 }
 
 #branding {
   font-family: "Open Sans", sans-serif;
-  -moz-user-select: none;
-  -webkit-user-select: none;
-  -ms-user-select: none;
-}
-
-#branding p {
-  margin: 0px 20px 20px 20px;
-  padding: 0;
-  font-size: 12px;
-  line-height: 12px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: #bf7171;
 }
 
 #branding h1 {
-  margin: 20px 20px 10px 20px;
+  margin: 20px 20px 10px;
   padding: 0;
   font-size: 24px;
   font-weight: 600;
@@ -63,35 +63,59 @@ body {
   color: #fff;
 }
 
-nav li {
-  display: inline-block;
+#branding p {
+  margin: 0 20px 20px;
+  padding: 0;
+  font-size: 12px;
+  line-height: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #a65959;
+}
+
+/* ==========================================================================
+   3. NAVIGASI (Sistem Flexbox)
+   ========================================================================== */
+nav ul {
+  display: flex;
+  list-style: none;
+  margin: 0 20px;
+  padding: 0;
+}
+
+nav ul li {
   margin: 0;
   padding: 0;
 }
 
+nav ul li:nth-child(1) { flex: 1; text-align: left; }
+nav ul li:nth-child(2) { flex: 3; text-align: center; }
+nav ul li:nth-child(3) { flex: 1; text-align: right; }
+
 nav li a {
-  display: block;
-  position: relative;
-  margin: 0 2px 0 0;
-  padding: 6px 12px 6px 12px;
+  display: inline-block;
+  padding: 10px 0;
   font-size: 12px;
   line-height: 12px;
   font-family: "Open Sans", sans-serif;
-  font-weight: 700;
-  border-radius: 6px 6px 0 0;
+  font-weight: bold;
   text-decoration: none;
   text-transform: uppercase;
-  transition-property: background;
-  transition-duration: 0.3s;
+  color: #bf9090;
+  transition: background 0.3s, color 0.3s;
 }
 
-nav li.selected a,
-nav li a.selected,
-nav li.active a,
-nav li a.active {
-  background: transparent; 
-  color: #fff !important;             
+nav li a:hover,
+nav li.selected a, nav li a.selected,
+nav li.active a, nav li a.active {
+  background: transparent;
+  color: #fff !important;
 }
+
+/* ==========================================================================
+   4. KONTEN PANEL UMUM
+   ========================================================================== */
 #loading {
   display: flex;
   justify-content: center;
@@ -107,35 +131,188 @@ nav li a.active {
   background: #fff;
 }
 
+/* ==========================================================================
+   5. INDEKS (Dropdown, Filter & Pencarian)
+   ========================================================================== */
 #index {
   display: none;
   flex-direction: column;
   font-family: "Open Sans", sans-serif;
-  -moz-user-select: none;
-  -webkit-user-select: none;
-  -ms-user-select: none;
 }
 
+#index header {
+  padding: 15px 20px;
+}
+
+#index header label {
+  display: block;
+  text-transform: uppercase;
+  padding-bottom: 8px;
+  font-size: 11px;
+  line-height: 11px;
+  font-weight: 700;
+  color: #eaa;
+}
+
+.filter-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 12px;
+}
+
+.filter-box {
+  position: relative;
+  border-radius: 6px;
+  background-color: #f3e9e9;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='32'><polyline fill='rgb(238,170,170)' points='6,12 12,22 18,12'/><line stroke='rgb(238,170,170)' x1='0' y1='0' x2='0' y2='32' /></svg>");
+  background-position: right;
+  background-repeat: no-repeat;
+}
+
+.filter-box select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  box-sizing: content-box;
+  height: 32px;
+  width: 100%;
+  padding: 0 5px;
+  border: none;
+  font-size: 12.5px;
+  line-height: 32px;
+  background: none;
+  color: #611;
+}
+
+select::-moz-focus-inner {
+  outline: none !important;
+}
+
+optgroup {
+  padding: 6px 6px 3px;
+  font-size: 11px;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: #a44;
+  font-style: normal;
+}
+
+option {
+  font-size: 12.5px;
+  text-transform: initial;
+  padding: 3px;
+  color: #000;
+}
+
+select > option { margin: 0 6px; }
+optgroup option { padding-left: 10px; }
+
+/* Tombol Fitur */
+.feat-btn {
+  background-color: #f3e9e9;
+  border: 1px solid #eaa;
+  border-radius: 4px;
+  padding: 5px 8px;
+  font-size: 11px;
+  color: #822;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s ease-in-out;
+}
+
+.feat-btn:hover {
+  background-color: #eaa;
+  color: #fff;
+}
+
+.feat-btn.active {
+  background-color: #822;
+  color: #fff;
+  border-color: #822;
+}
+
+/* Kotak Pencarian */
+#search-input {
+  appearance: none;
+  -webkit-appearance: none;
+  border: none;
+  outline: none;
+  border-radius: 0;
+  border-bottom: 1px solid #eaa;
+  font-size: 13px;
+  line-height: 20px;
+  padding: 10px 20px 12px;
+  width: 100%;
+  box-sizing: border-box;
+  display: block;
+  color: #888;
+  margin-top: -10px;
+  background-color: transparent;
+  height: 38px;
+  flex-shrink: 0;
+}
+
+#search-input:focus {
+  border-bottom: 1px solid #822;
+}
+
+#search-input::placeholder {
+  color: #888;
+  opacity: 1;
+}
+
+#search-input::-webkit-search-cancel-button {
+  appearance: none;
+  -webkit-appearance: none;
+  height: 40px;
+  width: 40px;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3e%3cpath fill='%23888888' d='M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z'/%3e%3c/svg%3e");
+  background-size: 20px 20px;
+  background-position: center;
+  background-repeat: no-repeat;
+  cursor: pointer;
+  margin: 0 -15px 0 0;
+}
+
+#search-input:not(:placeholder-shown)::-webkit-search-cancel-button {
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* ==========================================================================
+   6. DAFTAR INDEKS (List)
+   ========================================================================== */
 #index-list {
   list-style: none;
   flex: 1;
   overflow-y: auto;
   margin: 0;
-  padding: 0px 0;
+  padding: 0;
+  background: #f3e9e9;
 }
 
 #index-list li {
   margin: 0;
   padding: 0;
-  transition-property: background, box-shadow;
-  transition-duration: 0.3s;
+  transition: background 0.3s, box-shadow 0.3s;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  #index-list li:hover {
+    background: #eaa;
+    box-shadow: 0 -1px #eaa;
+  }
 }
 
 #index-list li a {
   display: block;
   margin: 0 20px;
   padding: 5px 0;
-  border-bottom: 1px solid;
+  border-bottom: 1px solid #eaa;
   font-size: 12.5px;
   line-height: 22px;
   font-weight: 400;
@@ -147,6 +324,9 @@ nav li a.active {
   border-bottom: none;
 }
 
+/* ==========================================================================
+   7. PANEL DETAIL BANGUNAN
+   ========================================================================== */
 #details {
   display: none;
   padding: 20px;
@@ -165,23 +345,51 @@ nav li a.active {
   line-height: 24px;
   font-family: "Open Sans", sans-serif;
   font-weight: 600;
-  border-bottom: 1px solid;
+  border-bottom: 1px solid #eaa;
+  color: #611;
 }
 
-#details h1 .subtitle {
-  font-size: 0.75em;
+#details h1 .subtitle { font-size: 0.75em; }
+#details h1 .subtitle::before { content: '\a'; white-space: pre; }
+
+#details h2 {
+  clear: right;
+  padding-top: 20px;
+  margin-top: 0;
+  border-top: 1px solid #eaa;
+  font-size: 12px;
+  line-height: 12px;
+  font-family: "Open Sans", sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: #666;
 }
-#details h1 .subtitle::before {
-  content: '\a';
-  white-space: pre;
-}
+
+#details p + h2 { margin-top: 15px; }
 
 #details p, #details li {
+  margin: 0;
+  padding: 0;
   font-size: 12.5px;
   line-height: 22px;
   font-family: Merriweather, serif;
 }
 
+#details p.nodata,
+#details .main-text.nodata,
+#details .main-text .nodata {
+  font-style: italic;
+  color: #888;
+}
+
+#details .main-text { padding: 0 170px 0 0; }
+#details .main-text .loader { margin: 40px auto 0; }
+#details .main-text p:first-child { margin-top: -5px; }
+
+.arsip-block p { padding-bottom: 10px !important; }
+
+/* --- Gambar & Figure --- */
 #details figure {
   float: right;
   clear: right;
@@ -192,8 +400,7 @@ nav li a.active {
   line-height: 20px;
   font-family: Merriweather, serif;
   background: #f4f4f4;
-  transition-property: height;
-  transition-duration: 0.5s;
+  transition: height 0.5s;
 }
 
 #details figure.nodata {
@@ -202,22 +409,22 @@ nav li a.active {
   font-style: italic;
   color: #888;
   display: flex;
-    flex-direction: column;   /* KUNCI: Memaksa isi tersusun ke bawah */
-    align-items: center;      /* Tengah horizontal */
-    justify-content: center;  /* Tengah vertikal */
-    box-sizing: border-box;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
   margin-bottom: 15px;
 }
 
 #details figure > a {
   display: block;
-  border: 1px solid;
+  border: 1px solid #ade;
   text-decoration: none;
 }
 
 #details figure img {
   display: block;
-  border: 2px solid white;
+  border: 2px solid #fff;
   width: 150px;
 }
 
@@ -228,7 +435,7 @@ nav li a.active {
 
 #details figcaption {
   display: block;
-  padding: 5px 0 0 0;
+  padding: 5px 0 0;
   font-size: 10px;
   line-height: 18px;
   color: #888;
@@ -242,73 +449,132 @@ nav li a.active {
   text-decoration: none;
   color: #888;
 }
+
 #details figcaption a:hover {
   background: #eee;
   border-bottom: 1px solid #eee;
 }
 
-#details .main-text {
-  padding: 0 170px 0 0;
-}
-
-#details .main-text .loader {
-  margin: 40px auto 0;
-}
-
-#details .main-text.nodata,
-#details .main-text .nodata {
-  font-style: italic;
-  color: #888;
-}
-
-#details .main-text p:first-child {
-  margin-top: -5px;
-}
-
-.arsip-block p {
-  padding-bottom: 10px !important;
-}
-
-#details h2 {
-  clear: right;
-  padding-top: 20px;
-  border-top: 1px solid;
-  font-size: 12px;
-  line-height: 12px;
-  font-family: "Open Sans", sans-serif;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-}
-
-#details p+h2 {
-  margin-top: 15px;
-}
-
-#details p.nodata {
-  font-style: italic;
-  color: #888;
-}
-
-#details p  a.image,
-#details li a.image {
+#details p a.image, #details li a.image {
   display: inline-block;
   border: none;
   margin-left: 10px;
 }
 
-#details p  a.image img,
-#details li a.image img {
-  vertical-align: middle;
+#details p a.image img, #details li a.image img { vertical-align: middle; }
+
+/* --- Tautan --- */
+#details .wikipedia-link { margin: 5px 0 10px; }
+#details .wikipedia-link a {
+  display: inline-block;
+  border: none;
+  line-height: 20px;
+  text-decoration: none;
+  color: #a22;
+}
+#details .wikipedia-link a:hover { background: #eee; }
+#details .wikipedia-link a img {
+  display: inline-block;
+  padding-right: 3px;
+  vertical-align: bottom;
+  background: #fff;
+}
+#details .wikipedia-link a span {
+  display: inline-block;
+  padding: 0 5px;
+  height: 22px;
+  line-height: 22px;
 }
 
+#details .sunting-linktambah {
+  text-decoration: none;
+  color: #888;
+  border-radius: 2px;
+  border-bottom: 1px dotted #ccc;
+}
+#details .sunting-linktambah:hover {
+  border-bottom: 1px solid #eee;
+  background: #eee;
+}
+
+.sunting-link {
+  display: inline-block;
+  width: 13px;
+  height: 13px;
+  vertical-align: middle;
+  margin-left: 5px;
+  background-color: #888;
+  -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M13.43 1.9a1.86 1.86 0 0 1 2.62 0l1.93 1.93a1.86 1.86 0 0 1 0 2.63l-10.9 10.9L2 18l.82-5.07z"/></svg>');
+  mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M13.43 1.9a1.86 1.86 0 0 1 2.62 0l1.93 1.93a1.86 1.86 0 0 1 0 2.63l-10.9 10.9L2 18l.82-5.07z"/></svg>');
+  -webkit-mask-size: cover;
+  mask-size: cover;
+  text-decoration: none;
+}
+.sunting-link:hover { background-color: #a22; }
+
+#details .koordinat-link a { text-decoration: none; color: #a22; }
+#details .koordinat-link a:hover { background: #eee; }
+
+/* --- Designations --- */
+#details .designations {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+#details .designations li {
+  position: relative;
+  list-style: none;
+  padding: 0 0 15px;
+  min-height: 50px;
+  margin-right: 0;
+}
+#details .designations li h3 {
+  margin: 0;
+  padding: 0;
+  font-size: 1.15em;
+  font-weight: bold;
+}
+#details .designations li .org { font-style: italic; color: #666; }
+#details .designations li .org img {
+  position: absolute;
+  top: 0; right: 0;
+  width: 50px;
+  height: 50px;
+}
+#details .designations li > p {
+  padding-left: 20px;
+  text-indent: -20px;
+}
+#details .designations li > p::before {
+  display: inline-block;
+  content: "■";
+  width: 20px;
+  text-indent: 0;
+  color: #888;
+}
+#details .designations li .wikilinks { padding-left: 20px; text-indent: 0; }
+#details .designations li .wikilinks p { margin-top: 5px; }
+#details .designations li .wikilinks p a {
+  display: inline-block;
+  border: none;
+  text-indent: initial;
+  text-decoration: none;
+  color: #a22;
+}
+#details .designations li .wikilinks p a:hover { background: #eee; }
+#details .designations li .wikilinks p a img { display: inline-block; padding-right: 3px; vertical-align: bottom; background: #fff; }
+#details .designations li .wikilinks p a span { display: inline-block; padding: 0 5px; height: 22px; line-height: 22px; }
+
+/* ==========================================================================
+   8. ABOUT & KONTRIB
+   ========================================================================== */
 #about, #kontrib {
   display: none;
   padding: 20px;
 }
 
 #about h2, #kontrib h2 {
-  margin: 20px 0 10px 0;
+  margin: 20px 0 10px;
   font-size: 16px;
   line-height: 16px;
   font-family: "Open Sans", sans-serif;
@@ -324,36 +590,30 @@ nav li a.active {
 }
 
 #about p, #kontrib p {
-  margin: 0 0 10px 0;
+  margin: 0 0 10px;
   padding: 0;
   font-size: 12.5px;
   line-height: 22px;
   font-family: Merriweather, serif;
 }
 
-#about p a, #kontrib p a {
-  border-bottom: 1px dotted #ccc;
-  text-decoration: none;
-  color: #666;
-}
-#about p a:hover, #kontrib p a:hover {
-  border-bottom: 1px solid #eee;
-  background: #eee;
-}
+#about p a, #kontrib p a { border-bottom: 1px dotted #ccc; text-decoration: none; color: #666; }
+#about p a:hover, #kontrib p a:hover { border-bottom: 1px solid #eee; background: #eee; }
+
 #kontrib h4 {
-font-family: "Open Sans", sans-serif;
+  font-family: "Open Sans", sans-serif;
   font-size: 13px;
-    color: #882222;
-    font-style: oblique;
+  color: #822;
+  font-style: oblique;
 }
 
 .grid-kontrib {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 15px;
-  margin-top: 20px;
-  margin-bottom: 20px;
+  margin: 20px 0;
 }
+
 .tombolkontrib {
   font-family: "Open Sans", sans-serif;
   font-size: 12.5px;
@@ -367,24 +627,19 @@ font-family: "Open Sans", sans-serif;
   box-sizing: border-box;
   text-align: center;
   line-height: 1.4;
-  background-color: #f3e9e9; 
-  color: #822; 
+  background-color: #f3e9e9;
+  color: #822;
   text-decoration: none;
   border-radius: 4px;
   border: 1px solid #eaa;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
+.tombolkontrib:hover { background-color: #822; color: #fff; cursor: pointer; }
 
-.tombolkontrib:hover {
-  background-color: #822; 
-  color: #fff; 
-  cursor: pointer;
-}
-
-
-#map {
-  flex: 1;
-}
+/* ==========================================================================
+   9. MAP & LEAFLET COMPONENT
+   ========================================================================== */
+#map { flex: 1; }
 
 .marker-cluster {
   background-clip: padding-box;
@@ -397,29 +652,27 @@ font-family: "Open Sans", sans-serif;
   height: 30px;
   text-align: center;
   border-radius: 15px;
-  font: 12px "Open Sans", sans-serif;
-  font-weight: bold;
+  font: bold 12px "Open Sans", sans-serif;
 }
+.marker-cluster span { line-height: 30px; color: #fff; }
 
-.marker-cluster span {
-  line-height: 30px;
-  color: #fff;
-}
+.marker-cluster-small      { background-color: rgba(204, 68, 68, 0.5); }
+.marker-cluster-small  div { background-color: rgba(204, 68, 68, 0.8); }
+.marker-cluster-medium     { background-color: rgba(170, 51, 51, 0.5); }
+.marker-cluster-medium div { background-color: rgba(170, 51, 51, 0.8); }
+.marker-cluster-large      { background-color: rgba(136, 34, 34, 0.5); }
+.marker-cluster-large  div { background-color: rgba(136, 34, 34, 0.8); }
 
 .leaflet-popup-content-wrapper, .leaflet-popup-tip {
-  user-select: none;
-  -moz-user-select: none;
-  -webkit-user-select: none;
-  -ms-user-select: none;
+  background: #822;
 }
 
 .leaflet-popup-content {
   font: 600 18px/20px "Open Sans", sans-serif;
   text-transform: uppercase;
-  color: white;
+  color: #fff;
   text-align: center;
 }
-
 .leaflet-popup-content .subtitle {
   padding: 2px 0 0;
   font-size: 12px;
@@ -438,28 +691,13 @@ font-family: "Open Sans", sans-serif;
   box-shadow: 0 1px 5px rgba(0,0,0,0.65);
 }
 
-.leaflet-control-layers {
-  border-radius: 4px;
-}
+.leaflet-control-layers { border-radius: 4px; }
+.leaflet-control-layers-toggle { width: 26px; height: 26px; background-size: 18px 18px; }
 
-.leaflet-control-layers-toggle {
-  width: 26px;
-  height: 26px;
-  background-size: 18px 18px;
-}
-
-.leaflet-touch .leaflet-control-layers-toggle {
-  width: 30px;
-  height: 30px;
-  background-size: 20px 20px;
-}
-
-.leaflet-touch .powered {
-  box-shadow: none;
-  border: 2px solid rgba(0,0,0,0.2);
-}
+.leaflet-touch .leaflet-control-layers-toggle { width: 30px; height: 30px; background-size: 20px 20px; }
+.leaflet-touch .powered { box-shadow: none; border: 2px solid rgba(0,0,0,0.2); }
 
 .leaflet-bottom.leaflet-right {
-    margin-bottom: 50px !important; /* Jarak dari bawah layar */
-    margin-right: 10px !important;  /* Jarak dari kanan layar */
+  margin-bottom: 50px !important;
+  margin-right: 10px !important;
 }
