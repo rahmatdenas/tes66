@@ -182,8 +182,11 @@ function populateCoordinatesData() {
   // 1. Tentukan kategori
   let kategori = tentukanKategoriKueri(inputTxt);
   
+  // === OBAT PETA MATI: Pinjam kueri general jika ini entitas alam ===
+  let namaKueri = (kategori === 'alam') ? 'general' : kategori;
+  
   // 2. Ambil kueri koordinat dari Kamus
-  let templateKueri = KUMPULAN_KUERI_1[kategori];
+  let templateKueri = KUMPULAN_KUERI_1[namaKueri];
 
   let kelompokCicilan = potongJadiKelompok(daftarQid, 1000);
 
@@ -703,16 +706,8 @@ function generateRecordDetails(qid) {
   let wikiUrlUtama = `https://www.wikidata.org/wiki/${qid}`;
   let tautanSuntingRingkasan = `<a href="${wikiUrlUtama}" target="_blank" class="sunting-link" title="Sunting data di Wikidata" aria-label="Sunting data di Wikidata"></a>`;
 
-  let isBersejarah = false;
-  if (record.rawTahunBerdiri) {
-    let tahunBangunan = parseInt(record.rawTahunBerdiri.substring(0, 4));
-    let batasTahun = new Date().getFullYear() - 50;
-    if (tahunBangunan <= batasTahun) {
-      isBersejarah = true;
-    }
-  }
-
-let teksJudul = 'Informasi';
+  // === PERBAIKAN: LOGIKA JUDUL YANG LEBIH RAPI DAN BERSIH ===
+  let teksJudul = 'Informasi';
   if (currentKategoriUtama === 'alam') {
     teksJudul = 'Informasi Geografis';
   } else if (currentKategoriUtama === 'pers') {
@@ -729,7 +724,9 @@ let teksJudul = 'Informasi';
   let designationsHtml = `<h2 style="margin-top:10px">${teksJudul} ${tautanSuntingRingkasan}</h2>`;
   designationsHtml += '<ul class="designations">';
 
-  // 2. UBAH LOGIKA INFO TAHUN DI DALAM LOOPING PROVINSI
+  // === PERBAIKAN: MENGEMBALIKAN VARIABEL YANG HILANG ===
+  let isFirstDesignation = true; 
+
   Object.keys(record.designations).forEach(provQid => {
     let namaProvinsi = record.designations[provQid];
     let infoTahunHtml = '';
