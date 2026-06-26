@@ -753,12 +753,14 @@ function generateRecordDetails(qid) {
     namaLokasi = `${spesifik}, ${teksDaftarProvinsi}`; 
   }
 
-  let infoLokasiHtml = '';
+let infoLokasiHtml = '';
   if (record.lat && record.lon) {
     let mapsUrl = `https://www.google.com/maps?q=${record.lat},${record.lon}`;
     infoLokasiHtml = `<p class="koordinat-link">Terletak di <a href="${mapsUrl}" target="_blank" rel="noopener noreferrer" title="Buka di Google Maps">${namaLokasi}</a></p>`;
   } else {
-    infoLokasiHtml = `<p class="koordinat-link">Terletak di: ${namaLokasi}</p>`;
+    infoLokasiHtml = 
+      `<p class="koordinat-link">Terletak di: ${namaLokasi}</p>` +
+      `<p>Koordinat: <span style="font-style: italic; color: #888;">Data belum tersedia</span></p>`;
   }
 
   // 3. Siapkan Info Tahun Didirikan (Hanya untuk kategori non-alam)
