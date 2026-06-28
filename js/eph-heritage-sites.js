@@ -1134,18 +1134,32 @@ function renderHistoricalImagesInPanel(qid) {
 }
 
 function displayArticleExtract(title, elem) {
-  loadJsonp(
-    'https://id.wikipedia.org/w/api.php',
-    {
-      action    : 'query',
-      format    : 'json',
-      prop      : 'extracts',
-      exintro   : 1,
-      redirects : true,
-      titles    : title,
-    },
-    function(data) {
-      let rawExtract = Object.values(data.query.pages)[0].extract;
+  // 1. Siapkan URL dan Parameter
+  let url = new URL('https://id.wikipedia.org/w/api.php');
+  let params = {
+    action: 'query',
+    format: 'json',
+    prop: 'extracts',
+    exintro: 1,
+    redirects: true,
+    titles: title,
+    origin: '*' // Kunci wajib agar terhindar dari blokir keamanan CORS browser
+  };
+  Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
+
+  // 2. Eksekusi Fetch API
+  fetch(url)
+    .then(response => {
+      if (!response.ok) throw new Error('Koneksi ke server Wikipedia gagal');
+      return response.json();
+    })
+    .then(data => {
+      // Proteksi jika data Wikipedia kosong/tidak valid
+      if (!data.query || !data.query.pages) {
+        throw new Error('Struktur data Wikipedia tidak ditemukan');
+      }
+
+      let rawExtract = Object.values(data.query.pages)[0].extract || '';
       
       let kumpulanParagraf = rawExtract.match(/<p[^>]*>[\s\S]+?<\/p>/g);
       let paragrafPilihan = kumpulanParagraf ? kumpulanParagraf.find(text => text.length > 50) : null;
@@ -1159,6 +1173,7 @@ function displayArticleExtract(title, elem) {
         paragrafPilihan = '<p>Ringkasan artikel belum memadai.</p>'; 
       }
 
+      // Cetak hasil ke dalam HTML
       elem.innerHTML =
         paragrafPilihan +
         '<p class="wikipedia-link">' +
@@ -1168,9 +1183,16 @@ function displayArticleExtract(title, elem) {
           '</a>' +
         '</p>';
         
+      // Matikan animasi loading dengan menghapus class
       elem.classList.remove('loading');
-    }
-  );
+    })
+    .catch(error => {
+      console.error('Gagal memuat artikel Wikipedia:', error);
+      
+      // JIKA GAGAL: Beri pesan error dan MATIKAN animasi loading
+      elem.innerHTML = '<p class="nodata" style="color:#cc0000; margin-top:10px;">Gagal memuat ringkasan artikel. Periksa koneksi internet Anda.</p>';
+      elem.classList.remove('loading');
+    });
 }
 
 function renderNextChunk() {
