@@ -262,14 +262,24 @@ function populateProvinceTypesData() {
   let kurungBuka = '';
   let kurungTutup = '';
 
+// === BLOK BARU: SAKELAR KLASTER KHUSUS ===
+  const klasterKhususNegara = ['Publikasi', 'Gempa bumi dan tsunami', 'Peristiwa lainnya'];
+  let isKhususNegara = klasterKhususNegara.includes(currentNamaKlaster);
+
   if (provInput === 'all') {
     wilayahClause1 = '?provinsi wdt:P31 wd:Q5098 .';
-    // Karena tidak ada UNION, kurung biarkan kosong!
+    
+    // Jika "Semua Provinsi" DAN klasternya termasuk 3 pengecualian:
+    // Pindahkan gigi kueri ke versi Opsional Lokasi!
+    if (isKhususNegara) {
+      baseQuery = KUMPULAN_KUERI_0['khusus_negara_all'];
+    }
+    
   } else {
+    // JIKA PROVINSI SPESIFIK DIPILIH (Logika lama tetap berjalan utuh)
     wilayahClause1 = `?provinsi wdt:P131 ${provInput}.`;
     let wilayahClause2 = `BIND(${provInput} AS ?provinsi) BIND(${provInput} AS ?p131Lokasi)`; 
     
-    // Karena ada UNION, kita wajib memanggil kurung kurawal pembungkus
     kurungBuka = '{';
     kurungTutup = '}';
     
@@ -282,8 +292,8 @@ function populateProvinceTypesData() {
   }
   
   let dynamicQuery = baseQuery
-    .replace(/<PLACEHOLDER_KURUNG_BUKA>/g, kurungBuka)     // Eksekusi Buka Kurung
-    .replace(/<PLACEHOLDER_KURUNG_TUTUP>/g, kurungTutup)   // Eksekusi Tutup Kurung
+    .replace(/<PLACEHOLDER_KURUNG_BUKA>/g, kurungBuka)  
+    .replace(/<PLACEHOLDER_KURUNG_TUTUP>/g, kurungTutup)  
     .replace(/<PLACEHOLDER_WILAYAH_1>/g, wilayahClause1)
     .replace(/<PLACEHOLDER_PROP_LOKASI>/g, propLokasi)
     .replace(/<PLACEHOLDER_PROP_TAHUN>/g, propTahun)
