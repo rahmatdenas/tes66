@@ -595,7 +595,7 @@ if (record.dynamicProps && Object.keys(record.dynamicProps).length > 0) {
       }
 else if (key === 'lamanResmi') {
   const displayUrl = rawValue.replace(/^https?:\/\/(www\.)?/, '');
-  formattedValue = `<p class="koordinat-link"><a href="${rawValue}" target="_blank" rel="noopener noreferrer" style="word-break: break-all;">${displayUrl}</a></p>`;
+  formattedValue = `<span class="koordinat-link"><a href="${rawValue}" target="_blank" rel="noopener noreferrer" style="word-break: break-all;">${displayUrl}</a></span>`;
 }
       else if (key === 'tglTemu' || key === 'tglWafat') {
         let [waktu, presisi] = rawValue.split('|');
