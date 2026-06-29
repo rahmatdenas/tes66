@@ -591,9 +591,16 @@ const labelKamus = {
         formattedValue = formatWikidataDate(waktu, presisi);
       }
       
-      // Aturan Khusus Hidangan (Bahan & Cara huruf kecil semua)
+// Aturan Khusus Hidangan (Bahan & Cara huruf kecil semua)
       if (key === 'bahanList' || key === 'caraList') {
         formattedValue = formattedValue.toLowerCase();
+      }
+      
+      // Aturan Khusus Bahasa (Hapus awalan "bahasa " yang berulang)
+      if (key === 'bahasaList') {
+        // Regex \b (word boundary) memastikan hanya kata "bahasa" utuh yang dihapus
+        // gi (global, case-insensitive) memastikan semua awalan di daftar koma ikut terhapus
+        formattedValue = formattedValue.replace(/\bbahasa\s+/gi, '');
       }
 
       // Kapitalisasi paksa telah dicabut, data tampil persis sesuai ejaan Wikidata
