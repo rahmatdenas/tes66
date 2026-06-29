@@ -633,7 +633,7 @@ if (urlWikibooks) {
       let wikibooksHtml = `
         <div style="margin-top:0px;">
           <h2 style="margin-bottom:0px;">Resep & Panduan</h2>
-          <p class="wikipedia-link" style="padding-bottom: 5px;">
+          <p class="wikipedia-link" style="padding: 5px 0;">
             <a href="${urlWikibooks}" target="_blank">
               <img src="img/wikibook_tiny_logo.png" alt="" />
               <span>Lihat di Wikibuku</span>
