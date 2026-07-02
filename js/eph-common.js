@@ -161,8 +161,8 @@ function initMap() {
 Map = new L.map('map', { 
   zoomControl: false, 
   attributionControl: false,
-  zoomDelta: 3, // Lompatan tombol +/- (Ubah ke 2 atau 3 untuk lompatan lebih jauh)
-  zoomSnap: 3   // Kunci presisi scroll mouse (Selalu samakan angkanya dengan zoomDelta)
+  zoomDelta: 2, // Lompatan tombol +/- (Ubah ke 2 atau 3 untuk lompatan lebih jauh)
+  zoomSnap: 2   // Kunci presisi scroll mouse (Selalu samakan angkanya dengan zoomDelta)
 });
   Map.fitBounds([[MAX_PH_LAT, MAX_PH_LON], [MIN_PH_LAT, MIN_PH_LON]]);
 
@@ -705,3 +705,31 @@ function updateNavigationUI(fragment) {
     });
   }
 }
+
+// ============================================================
+// PINTASAN KEYBOARD (Navigasi Kiri & Kanan)
+// ============================================================
+window.addEventListener('keydown', function(e) {
+  // 1. Abaikan ketikan jika pengguna sedang mengetik di dalam kotak pencarian atau form
+  if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) {
+    return;
+  }
+
+  // 2. Jika tombol Panah Kiri ditekan
+  if (e.key === 'ArrowLeft') {
+    let btnPrev = document.getElementById('btn-prev');
+    // Pastikan tombol "Sebelumnya" ada, aktif (punya href), dan tidak sedang dimatikan
+    if (btnPrev && btnPrev.hasAttribute('href') && btnPrev.style.pointerEvents !== 'none') {
+      window.location.hash = btnPrev.getAttribute('href');
+    }
+  } 
+  
+  // 3. Jika tombol Panah Kanan ditekan
+  else if (e.key === 'ArrowRight') {
+    let btnNext = document.getElementById('btn-next');
+    // Pastikan tombol "Selanjutnya" ada dan aktif
+    if (btnNext && btnNext.hasAttribute('href') && btnNext.style.pointerEvents !== 'none') {
+      window.location.hash = btnNext.getAttribute('href');
+    }
+  }
+});
