@@ -264,7 +264,7 @@ function populateProvinceTypesData() {
 let hierarkiLokasi = '?l wdt:P131* ?p .'; 
     let kurungBuka = '';
   let kurungTutup = '';
-  const klasterKhususNasional = ['Gempa bumi dan tsunami', 'Peristiwa lainnya', 'Publikasi', 'Lukisan'];
+  const klasterKhususNasional = ['Wilayah Administratif', 'Gempa bumi dan tsunami', 'Peristiwa lainnya', 'Publikasi', 'Lukisan'];
   let isKhususNasional = klasterKhususNasional.includes(currentNamaKlaster);
 let filterNasional = '?s wdt:P17 wd:Q252 .';
 if (currentNamaKlaster === 'Publikasi') {
@@ -273,7 +273,9 @@ if (currentNamaKlaster === 'Publikasi') {
 // ...
 if (provInput === 'all') {
   wilayahClause1 = '?p wdt:P31 wd:Q5098 .';
-// ...
+  if (isKhususNasional) {
+    baseQuery = KUMPULAN_KUERI_0['khusus_negara_all'];
+  }
 } else {
     wilayahClause1 = `?p wdt:P131 ${provInput}.`;
     let wilayahClause2 = `BIND(${provInput} AS ?p) BIND(${provInput} AS ?l)`; 
