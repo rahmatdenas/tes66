@@ -376,8 +376,9 @@ function enableApp() {
 function processHashChange() {
   let fragment = window.location.hash.replace('#', '');
 
+  // Hapus perintah window.setMobilePanelExpanded(true) dari sini
   if (typeof window.setMobilePanelExpanded === 'function') {
-    window.setMobilePanelExpanded(true, !isAppInitialLoad);
+    // Biarkan variabel status awal saja, jangan paksa panel terbuka
     isAppInitialLoad = false; 
   }
 
