@@ -37,13 +37,8 @@ function init() {
   window.addEventListener('hashchange', processHashChange);
   Map.on('popupopen', function(e) { displayRecordDetails(e.popup._qid) });
   
-  // Langsung eksekusi ke landing tanpa delay 50ms
-  if (window.location.hash === '' || window.location.hash === '#') {
-    window.location.hash = 'landing';
-  } else {
-    // Jalankan jika pengunjung masuk lewat link spesifik (contoh: domain.com/#Q123)
-    processHashChange();
-  }
+  // Langsung proses status hash saat web dibuka tanpa memaksa tambah #landing
+  processHashChange();
 }
 
 function setupLandingForm() {
@@ -77,9 +72,10 @@ function setupLandingForm() {
     
     // === MULAI LOADING ===
     isFetching = true; 
-    window.location.hash = '';
     
-    // Langsung buka Daftar, jangan buka layar Loading lama!
+    // Ubah URL ke #hasil agar masuk ke daftar
+    window.location.hash = 'hasil';
+    
     loadPrimaryData();
   });
 }
@@ -381,32 +377,34 @@ function processHashChange() {
   let fragment = window.location.hash.replace('#', '');
 
   if (typeof window.setMobilePanelExpanded === 'function') {
-    // Pakai animasi (true) KECUALI saat muatan awal aplikasi (false)
     window.setMobilePanelExpanded(true, !isAppInitialLoad);
-    isAppInitialLoad = false; // Matikan penanda setelah lewat satu kali
+    isAppInitialLoad = false; 
   }
 
-  if (fragment === 'landing') {
+  // 1. Eksekusi Navigasi Dinamis (Fungsi baru)
+  updateNavigationUI(fragment);
+
+  if (fragment === '') {
+    // BERANDA: URL bersih, setel ulang aplikasi
+    history.replaceState(null, null, window.location.pathname); // Hilangkan '#' dari address bar
     resetApp(); 
     document.title = 'Mulai Eksplorasi – ' + BASE_TITLE;
     displayPanelContent('landing');
   }
   else if (fragment === 'about') {
+    // TENTANG
     document.title = 'About – ' + BASE_TITLE;
     displayPanelContent('about');
   }
-  else if (fragment === 'kontrib') {
-    document.title = 'Jadi Kontributor – ' + BASE_TITLE;
-    displayPanelContent('kontrib'); 
-  }
   else {
-    // === KUNCI PERBAIKAN TUNTAS ===
-    // Tangkap baik hash kosong ('') maupun 'index' sebagai Halaman Daftar
-    let isIndexPage = (fragment === '' || fragment === 'index');
+    // HASIL atau DETAIL BUTIR
+    let isIndexPage = (fragment === 'hasil');
 
     if (!PrimaryDataIsLoaded) {
-      if (isIndexPage) {
-        document.title = 'Daftar – ' + BASE_TITLE;
+      if (fragment !== '') {
+        // Jika sembarang ketik URL atau menekan tab Hasil sebelum data ditarik
+        if (!isIndexPage) window.location.hash = 'hasil'; // Paksa arahkan ke #hasil
+        document.title = 'Hasil – ' + BASE_TITLE;
         displayPanelContent('index');
 
         let indexList = document.getElementById('index-list');          
@@ -416,25 +414,23 @@ function processHashChange() {
               <h3 style="margin-bottom: 10px; margin-top:0; color: #333;">Data Belum Ditarik</h3>
               <p style="color: #666; font-size:14px; margin-bottom: 25px;">
               Anda belum melakukan pencarian. Silakan kembali ke halaman Beranda untuk memilih entitas yang ingin dieksplorasi.</p>
-              <a href="#landing" style="background-color: #882222; color: #fff; 
+              <a href="#" style="background-color: #882222; color: #fff; 
               padding: 10px 20px; text-decoration: none; border-radius: 5px; 
               font-weight: 800; display: inline-block;">Pilih Data</a>
             </div>
-          `;
+          `; // href="#" agar memicu kembali ke Beranda murni
         }
-      } else {
-        // Lempar ke Landing HANYA jika yang diketik benar-benar link spesifik (contoh: #Q123)
-        window.location.hash = 'landing';
       }
     } 
     else {
-      // Normal: Data sudah ditarik
+      // Skenario Normal: Data sudah ditarik
       if (isIndexPage || !(fragment in Records)) {
-        window.location.hash = '';  
-        document.title = BASE_TITLE;
+        if (!isIndexPage) window.location.hash = 'hasil';  
+        document.title = 'Hasil – ' + BASE_TITLE;
         displayPanelContent('index');
       }
       else {
+        // Buka Detail Butir (Nav akan berubah jadi << Hasil >>)
         activateMapMarker(fragment);
         displayRecordDetails(fragment);
       }
@@ -630,5 +626,83 @@ function parseDate(result, keyName) {
   } else {
     let date = new Date(dateVal);
     return date.toLocaleDateString('en-US', { month : 'long', day : 'numeric', year : 'numeric' });
+  }
+}
+
+// Fungsi pembantu untuk mendapatkan QID dari Objek Record
+function getQidByRecordObj(recordObj) {
+  for (let qid in Records) {
+    if (Records[qid] === recordObj) return qid;
+  }
+  return null;
+}
+
+// Fungsi utama pengendali Navigasi
+function updateNavigationUI(fragment) {
+  let navStandar = document.getElementById('nav-standar');
+  let navDetail = document.getElementById('nav-detail');
+  
+  if (!navStandar || !navDetail) return;
+
+  // Deteksi apakah yang sedang dibuka adalah Detail Butir yang valid
+  let isDetailView = (fragment !== '' && fragment !== 'hasil' && fragment !== 'about' && PrimaryDataIsLoaded && (fragment in Records));
+
+  if (isDetailView) {
+    // NYALAKAN MODE DETAIL (<< Hasil >>)
+    navStandar.style.display = 'none';
+    navDetail.style.display = 'flex';
+    
+    let btnPrev = document.getElementById('btn-prev');
+    let btnNext = document.getElementById('btn-next');
+    
+    // Cari indeks butir saat ini yang sesuai dengan urutan filter (applyIntersectionFilter)
+    let currentIndex = currentFilteredRecords.findIndex(r => r === Records[fragment]);
+    
+    // Konfigurasi Tombol '<<' (Sebelumnya)
+    if (currentIndex > 0) {
+      let prevQid = getQidByRecordObj(currentFilteredRecords[currentIndex - 1]);
+      btnPrev.href = '#' + prevQid;
+      btnPrev.style.opacity = '1';
+      btnPrev.style.pointerEvents = 'auto';
+    } else {
+      // Mati jika sudah di urutan paling awal atau tidak ketemu
+      btnPrev.removeAttribute('href');
+      btnPrev.style.opacity = '0.3';
+      btnPrev.style.pointerEvents = 'none';
+    }
+
+    // Konfigurasi Tombol '>>' (Selanjutnya)
+    if (currentIndex !== -1 && currentIndex < currentFilteredRecords.length - 1) {
+      let nextQid = getQidByRecordObj(currentFilteredRecords[currentIndex + 1]);
+      btnNext.href = '#' + nextQid;
+      btnNext.style.opacity = '1';
+      btnNext.style.pointerEvents = 'auto';
+    } else {
+      // Mati jika sudah di urutan paling akhir
+      btnNext.removeAttribute('href');
+      btnNext.style.opacity = '0.3';
+      btnNext.style.pointerEvents = 'none';
+    }
+
+  } else {
+    // KEMBALI KE MODE STANDAR (Beranda | Hasil | Tentang)
+    navStandar.style.display = 'flex';
+    navDetail.style.display = 'none';
+    
+    // Manajemen indikator 'aktif' (opsional jika ada kelas CSS .selected)
+    navStandar.querySelectorAll('li').forEach(li => {
+      let link = li.querySelector('a');
+      if (!link) return;
+      let hrefVal = link.getAttribute('href');
+      
+      // Cocokkan href dengan URL saat ini
+      if ((fragment === '' && hrefVal === '#') ||
+          (fragment === 'hasil' && hrefVal === '#hasil') ||
+          (fragment === 'about' && hrefVal === '#about')) {
+        li.classList.add('selected');
+      } else {
+        li.classList.remove('selected');
+      }
+    });
   }
 }
