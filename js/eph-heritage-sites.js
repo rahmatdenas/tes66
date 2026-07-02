@@ -84,6 +84,11 @@ function loadPrimaryData() {
        // 2. Tampilkan pesan error di panel daftar (menggantikan alert bawaan browser)
        let indexList = document.getElementById('index-list');
        if (indexList) {
+
+         let brandingDesc = document.getElementById('branding-desc');
+    if (brandingDesc) {
+      brandingDesc.textContent = `${currentNamaKlaster} di ${currentNamaWilayah}`;
+    }
          indexList.innerHTML = `
            <div style="padding: 40px 20px; text-align: center; line-height: 1.6;">
              <h3 style="margin-bottom: 10px; margin-top:0; color: #cc0000;">Koneksi Terputus</h3>
