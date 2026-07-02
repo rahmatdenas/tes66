@@ -161,8 +161,8 @@ function initMap() {
 Map = new L.map('map', { 
   zoomControl: false, 
   attributionControl: false,
-  zoomDelta: 2, // Lompatan tombol +/- (Ubah ke 2 atau 3 untuk lompatan lebih jauh)
-  zoomSnap: 2   // Kunci presisi scroll mouse (Selalu samakan angkanya dengan zoomDelta)
+  zoomDelta: 3, // Lompatan tombol +/- (Ubah ke 2 atau 3 untuk lompatan lebih jauh)
+  zoomSnap: 3   // Kunci presisi scroll mouse (Selalu samakan angkanya dengan zoomDelta)
 });
   Map.fitBounds([[MAX_PH_LAT, MAX_PH_LON], [MIN_PH_LAT, MIN_PH_LON]]);
 
