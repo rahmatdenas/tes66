@@ -239,12 +239,6 @@ function updateLabel(expanded) {
         e.preventDefault();
       }
     });
-
-    if (window.Map) {
-      Map.on('popupopen', function() {
-        if (isMobile()) window.setMobilePanelExpanded(true);
-      });
-    }
   });
 
   window.addEventListener('resize', handleViewportChange);
