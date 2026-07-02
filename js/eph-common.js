@@ -90,6 +90,11 @@ if (activeXhrs.length > 0) {
     activeXhrs = []; 
   }
 
+  let brandingDesc = document.getElementById('branding-desc');
+  if (brandingDesc) {
+    brandingDesc.textContent = 'Ensiklopedia Interaktif Indonesia';
+  }
+
   // 2. Bersihkan Memori Inti
   Records = {};
   ProvinceIndex = {};
