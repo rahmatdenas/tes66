@@ -50,17 +50,21 @@ function updateLabel(expanded) {
     if (!handleLabel) return;
     
     var hash = window.location.hash.replace('#', '');
-    var namaHalaman = 'Semua Hasil'; // Teks bawaan yang baru
+    var teksTarikNaik = 'Tarik naik untuk lihat Daftar'; // Teks bawaan (default)
     
     if (hash === '' || hash === 'landing') {
-      namaHalaman = 'Beranda';
+      teksTarikNaik = 'Tarik naik untuk Mulai Menjelajah';
     } else if (hash === 'about') {
-      namaHalaman = 'Tentang';
+      teksTarikNaik = 'Tarik naik untuk lihat Tentang';
+    } else if (hash !== 'hasil') {
+      // Jika hash bukan kosong, bukan landing, bukan about, dan BUKAN hasil,
+      // maka dipastikan pengguna sedang membuka spesifik butir (Q-ID).
+      teksTarikNaik = 'Tarik naik untuk membaca detail';
     }
     
     handleLabel.textContent = expanded
       ? 'Tarik turun untuk lihat peta'
-      : 'Tarik naik untuk lihat ' + namaHalaman;
+      : teksTarikNaik;
   }
 
  window.setMobilePanelExpanded = function(expand, animate) {
