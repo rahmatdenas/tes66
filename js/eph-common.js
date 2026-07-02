@@ -488,16 +488,9 @@ currentFilteredRecords.forEach(r => {
 }
 
 function displayPanelContent(id) {
+  // Hanya mengatur panel konten yang tampil
   document.querySelectorAll('.panel-content').forEach(content => {
     content.style.display = (content.id === id) ? content.dataset.display : 'none';
-  });
-  document.querySelectorAll('nav li').forEach(li => {
-    if (li.childNodes[0].getAttribute('href') === '#' + id) {
-      li.classList.add('selected');
-    }
-    else {
-      li.classList.remove('selected');
-    }
   });
 }
 
