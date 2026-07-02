@@ -46,16 +46,16 @@
   }
 
   // KUNCI 2: Deteksi Hash URL untuk mengubah teks label secara dinamis
-  function updateLabel(expanded) {
+function updateLabel(expanded) {
     if (!handleLabel) return;
     
     var hash = window.location.hash.replace('#', '');
-    var namaHalaman = 'hasil'; // Teks bawaan (default)
+    var namaHalaman = 'Semua Hasil'; // Teks bawaan yang baru
     
     if (hash === '' || hash === 'landing') {
-      namaHalaman = 'beranda';
+      namaHalaman = 'Beranda';
     } else if (hash === 'about') {
-      namaHalaman = 'tentang';
+      namaHalaman = 'Tentang';
     }
     
     handleLabel.textContent = expanded
