@@ -158,7 +158,12 @@ if (activeXhrs.length > 0) {
 
 function initMap() {
   // 1. Matikan atribusi bawaan agar bisa kita pindahkan
-  Map = new L.map('map', { zoomControl: false, attributionControl: false });
+Map = new L.map('map', { 
+  zoomControl: false, 
+  attributionControl: false,
+  zoomDelta: 2, // Lompatan tombol +/- (Ubah ke 2 atau 3 untuk lompatan lebih jauh)
+  zoomSnap: 2   // Kunci presisi scroll mouse (Selalu samakan angkanya dengan zoomDelta)
+});
   Map.fitBounds([[MAX_PH_LAT, MAX_PH_LON], [MIN_PH_LAT, MIN_PH_LON]]);
 
   // 2. Tambahkan Atribusi di Kiri Atas (Dieksekusi paling pertama agar ada di posisi paling atas)
