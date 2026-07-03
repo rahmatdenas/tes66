@@ -302,7 +302,6 @@ optgroup option { padding-left: 10px; }
 #index-list li {
   margin: 0;
   padding: 0;
-  transition: background 0.3s, box-shadow 0.3s;
   -webkit-touch-callout: none;
 }
 
