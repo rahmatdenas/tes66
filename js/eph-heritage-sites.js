@@ -71,7 +71,7 @@ function loadPrimaryData() {
     // ==========================================
     // PERBAIKAN DI BLOK CATCH INI
     // ==========================================
-    .catch(error => {
+.catch(error => {
        if (error === 'ABORTED') {
          console.log("Pencarian dibatalkan secara paksa. Kembali ke Beranda.");
          return;
@@ -83,12 +83,7 @@ function loadPrimaryData() {
 
        // 2. Tampilkan pesan error di panel daftar (menggantikan alert bawaan browser)
        let indexList = document.getElementById('index-list');
-       if (indexList) {
-
-         let brandingDesc = document.getElementById('branding-desc');
-    if (brandingDesc) {
-      brandingDesc.textContent = `${currentNamaKlaster} di ${currentNamaWilayah}`;
-    }
+       if (indexList) {         
          indexList.innerHTML = `
            <div style="padding: 40px 20px; text-align: center; line-height: 1.6;">
              <h3 style="margin-bottom: 10px; margin-top:0; color: #cc0000;">Koneksi Terputus</h3>
@@ -241,6 +236,11 @@ function populateProvinceTypesData() {
   currentKategoriUtama = tentukanKategoriKueri(inputTxt);
   currentNamaKlaster = dapatkanNamaKlaster(inputTxt); 
   currentNamaWilayah = provDropdown.options[provDropdown.selectedIndex].text;
+
+let brandingDesc = document.getElementById('branding-desc');
+  if (brandingDesc) {
+    brandingDesc.textContent = `${currentNamaKlaster} di ${currentNamaWilayah}`;
+  }
   
   // 2. RENDER LOADING LANGSUNG DI SINI SECARA UTUH
   let indexList = document.getElementById('index-list');
