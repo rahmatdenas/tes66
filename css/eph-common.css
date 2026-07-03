@@ -303,16 +303,13 @@ optgroup option { padding-left: 10px; }
   margin: 0;
   padding: 0;
   transition: background 0.3s, box-shadow 0.3s;
-  -webkit-tap-highlight-color: transparent;
   -webkit-touch-callout: none;
 }
 
-@media (hover: hover) and (pointer: fine) {
   #index-list li:hover {
     background: #eaa;
     box-shadow: 0 -1px #eaa;
   }
-}
 
 #index-list li a {
   display: block;
